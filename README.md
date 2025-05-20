@@ -1,0 +1,264 @@
+# PoseFormerV2 — 3D Human Pose Estimation
+
+<details>
+<summary><strong>▶️ Original Project Description (click to expand)</strong></summary>
+
+# PoseFormerV2: Exploring Frequency Domain for Efficient and Robust 3D Human Pose Estimation
+
+This repo is the official implementation for **PoseFormerV2: Exploring Frequency Domain for Efficient and Robust 3D Human Pose Estimation**. The paper has been accepted to [CVPR 2023](https://cvpr2023.thecvf.com/).
+
+[arXiv](https://arxiv.org/pdf/2303.17472.pdf) / [project page](https://qitaozhao.github.io/PoseFormerV2) / [video](https://www.youtube.com/watch?v=2xVNrGpGldM)
+
+| ![dance_1](images/demo_1.gif) | ![dance_2](images/demo_2.gif) |
+| ----------------------------- | ----------------------------- |
+
+### News
+
+[2024.06.16] Sorry for the huge delay. The code and pre-trained model for MPI-INF-3DHP has been released. Please check [here](https://github.com/QitaoZhao/PoseFormerV2?tab=readme-ov-file#mpi-inf-3dhp).
+
+[2024.02.06] The environment requirements are updated. Also, check our NeurIPS 2023 paper [ContextAware-PoseFormer](https://github.com/QitaoZhao/ContextAware-PoseFormer) (It outperforms sequence-based models with a single video frame as input)!
+
+[2023.06.16] Codes for in-the-wild video demos are released!
+
+[2023.05.31] We have a narrated video introduction. Please check [here](https://www.youtube.com/watch?v=2xVNrGpGldM).
+
+[2023.03.28] We build a [project page](https://qitaozhao.github.io/PoseFormerV2) where we place more descriptions and video demos.
+
+[2023.03.31] Our paper on [arXiv](https://arxiv.org/pdf/2303.17472.pdf) is ready!
+
+## Introduction
+
+PoseFormerV2 is built upon [PoseFormer](https://github.com/zczcwh/PoseFormer). It targets improving its efficiency in processing long input sequences and its robustness to noisy 2D joint detection via a frequency-domain joint sequence representation.
+
+**Abstract.** Recently, transformer-based methods have gained significant success in sequential 2D-to-3D lifting human pose estimation. As a pioneering work, PoseFormer captures spatial relations of human joints in each video frame and human dynamics across frames with cascaded transformer layers and has achieved impressive performance. However, in real scenarios, the performance of PoseFormer and its follow-ups is limited by two factors: (a) The length of the input joint sequence; (b) The quality of 2D joint detection. Existing methods typically apply self-attention to all frames of the input sequence, causing a huge computational burden when the frame number is increased to obtain advanced estimation accuracy, and they are not robust to noise naturally brought by the limited capability of 2D joint detectors. In this paper, we propose PoseFormerV2, which exploits a compact representation of lengthy skeleton sequences in the frequency domain to efficiently scale up the receptive field and boost robustness to noisy 2D joint detection. With minimum modifications to PoseFormer, the proposed method effectively fuses features both in the time domain and frequency domain, enjoying a better speed-accuracy trade-off than its precursor. Extensive experiments on two benchmark datasets (i.e., Human3.6M and MPI-INF-3DHP) demonstrate that the proposed approach significantly outperforms the original PoseFormer and other transformer-based variants.
+
+![PoseFormerV2](./images/framework.jpg)
+
+## Visualizations
+
+![PoseFormerV2](./images/visualization.jpg)
+
+![PoseFormerV2](./images/noise_comparison.jpg)
+
+## Cite PoseFormerV2
+
+If you find PoseFormerV2 useful in your research, please consider citing:
+
+```bibtex
+@InProceedings{Zhao_2023_CVPR,
+    author    = {Zhao, Qitao and Zheng, Ce and Liu, Mengyuan and Wang, Pichao and Chen, Chen},
+    title     = {PoseFormerV2: Exploring Frequency Domain for Efficient and Robust 3D Human Pose Estimation},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2023},
+    pages     = {8877-8886}
+}
+```
+
+## Environment
+
+The code is developed and tested under the following environment:
+
+- Python 3.9
+- PyTorch 1.13.0
+- CUDA 11.7
+
+```
+conda create -n poseformerv2 python=3.9
+conda activate poseformerv2
+pip install torch==1.13.0+cu117 torchvision==0.14.0+cu117 torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117
+pip install -r requirements.txt
+```
+
+## Human3.6M
+
+### Dataset preparation
+
+Please refer to [VideoPose3D](https://github.com/facebookresearch/VideoPose3D) to set up the Human3.6M dataset as follows:
+
+```
+code_root/
+└── data/
+	├── data_2d_h36m_gt.npz
+	├── data_2d_h36m_cpn_ft_h36m_dbb.npz
+	└── data_3d_h36m.npz
+```
+
+### Training
+
+You can train PoseFormerV2 on a single GPU with the following command:
+
+```bash
+python run_poseformer.py -g 0 -k cpn_ft_h36m_dbb -frame 27 -frame-kept 3 -coeff-kept 3 -c checkpoint/NAMED_PATH
+```
+
+This example shows how to train PoseFormerV2 with 3 central frames and 3 DCT coefficients from a 27-frame sequence. You can set *frame-kept* and *coeff-kept* to arbitrary values (of course <= frame number) as you like :)
+
+### Evaluation
+
+We provide pre-trained models with different inputs:
+
+| Model        | Sequence Leng. |  f   |  n   | #Depth | Hidden Dim. | #MFLOPs | MPJPE (mm) |                           Download                           |
+| :----------- | :------------: | :--: | :--: | :----: | :---------: | :-----: | :--------: | :----------------------------------------------------------: |
+| PoseFormerV2 |       27       |  1   |  3   |   4    |     32      |  77.2   |    48.7    | [model](https://drive.google.com/file/d/14J0GYIzk_rGKSMxAPI2ydzX76QB70-g3/view?usp=share_link) |
+| /            |       27       |  3   |  3   |   4    |     32      |  117.3  |    47.9    | [model](https://drive.google.com/file/d/13oJz5-aBVvvPVFvTU_PrLG_m6kdbQkYs/view?usp=share_link) |
+| /            |       81       |  1   |  3   |   4    |     32      |  77.2   |    47.6    | [model](https://drive.google.com/file/d/14WgFFBsP0DtTq61XZWI9X2TzvFLCWEnd/view?usp=share_link) |
+| /            |       81       |  3   |  3   |   4    |     32      |  117.3  |    47.1    | [model](https://drive.google.com/file/d/13rXCkYnVnkbT-cz4XCo0QkUnUEYiSeoi/view?usp=share_link) |
+| /            |       81       |  9   |  9   |   4    |     32      |  351.7  |    46.0    | [model](https://drive.google.com/file/d/13wla4b5RgJGKX5zVehv4qKhCrQEFhfzG/view?usp=share_link) |
+| /            |      243       |  27  |  27  |   4    |     32      | 1054.8  |    45.2    | [model](https://drive.google.com/file/d/14SpqPyq9yiblCzTH5CorymKCUsXapmkg/view?usp=share_link) |
+
+You can evaluate PoseFormerV2 with prepared checkpoints as:
+
+```bash
+python run_poseformer.py -g 0 -k cpn_ft_h36m_dbb -frame 27 -frame-kept 3 -coeff-kept 3 -c checkpoint/ --evaluate NAME_ckpt.bin
+```
+
+## MPI-INF-3DHP
+
+We followed [P-STMO](https://github.com/paTRICK-swk/P-STMO?tab=readme-ov-file#mpi-inf-3dhp-1) to prepare the data and train our model. Please click [here](https://github.com/QitaoZhao/PoseFormerV2/tree/main/mpi_inf_3dhp) for details.
+
+## Video Demo
+
+| ![skating](images/demo_3.gif) |
+| :---------------------------: |
+
+Our codes for in-the-wild video demos are adopted from [MHFormer](https://github.com/Vegetebird/MHFormer).
+
+First, you need to download the pretrained weights for YOLOv3 ([here](https://drive.google.com/file/d/1YgA9riqm0xG2j72qhONi5oyiAxc98Y1N/view?usp=sharing)), HRNet ([here](https://drive.google.com/file/d/1YLShFgDJt2Cs9goDw9BmR-UzFVgX3lc8/view?usp=sharing)) and put them in the `./demo/lib/checkpoint` directory. Then, put your in-the-wild videos in the `./demo/video` directory. 
+
+NOTE: make sure you have also downloaded the weights for PoseFormerV2! (the default path in the code is `./checkpoint`, and the default model variant used is `27_243_45.2.bin`, using 243 frames as input)
+
+Run the command below:
+
+```bash
+python demo/vis.py --video sample_video.mp4
+```
+
+## Acknowledgment
+
+Our codes are mainly based on [PoseFormer](https://github.com/zczcwh/PoseFormer). We follow [P-STMO](https://github.com/paTRICK-swk/P-STMO?tab=readme-ov-file#mpi-inf-3dhp-1) to train on MPI-INF-3DHP and [MHFormer](https://github.com/Vegetebird/MHFormer) to prepare our in-the-wild video demos and visualizations. Many thanks to the authors!
+
+</details>
+
+## ⚙️ How to Set Up the Environment (Windows / Linux)
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/QitaoZhao/PoseFormerV2.git
+cd PoseFormerV2
+```
+
+### 2. Set Up Python Environment with Conda
+
+```bash
+conda create -n poseformerv2 python=3.9
+conda activate poseformerv2
+
+pip install torch==1.13.0+cu117 torchvision==0.14.0+cu117 torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117
+pip install -r requirements.txt
+```
+
+### 3. Download Required Model Files
+
+You need to manually download three files from Google Drive and place them in the appropriate folders:
+
+#### 🔻 YOLOv3 and HRNet weights for 2D pose detection
+
+1. [YOLOv3 weights](https://drive.google.com/file/d/1YgA9riqm0xG2j72qhONi5oyiAxc98Y1N/view)
+2. [HRNet pose model](https://drive.google.com/file/d/1YLShFgDJt2Cs9goDw9BmR-UzFVgX3lc8/view)
+
+Place both files in the directory:
+
+```
+./demo/lib/checkpoint/
+```
+
+#### 🔻 PoseFormerV2 pretrained model
+
+3. [PoseFormerV2 pretrained weights (243 frames)](https://drive.google.com/file/d/14SpqPyq9yiblCzTH5CorymKCUsXapmkg/view)
+
+Place this file in the directory:
+
+```
+./checkpoint/
+```
+
+### 4. Run the Demo
+
+Put your test video (e.g., `sample_video.mp4`) into the folder:
+
+```
+./demo/video/
+```
+
+Then, run the demo script:
+
+```bash
+python demo/vis.py --video sample_video.mp4
+```
+
+The output visualizations will be saved in:
+
+```
+./demo/output/sample_video/
+```
+
+### 5. Run Output Comparison
+
+After generating the visualizations, you can run the comparison script to ensure that the output images match the expected results:
+
+```bash
+python compare_outputs.py
+```
+
+This script will compare `.png` images in the following folders:
+
+* `demo/output/sample_video/pose/` ↔ `test/sample_video/pose/`
+* `demo/output/sample_video/pose2D/` ↔ `test/sample_video/pose2D/`
+* `demo/output/sample_video/pose3D/` ↔ `test/sample_video/pose3D/`
+
+It will print out the similarity percentage for each folder.
+
+## 🐳 Running in Docker
+
+### 1. Build the Docker Image
+
+Make sure you're in the root directory of the project (where the `Dockerfile` is located), then build the image:
+
+```bash
+docker build -t poseformerv2 .
+```
+
+### 2. Download Required Model Files
+
+You need to manually download three files from Google Drive and place them in the appropriate folders:
+
+#### 🔻 YOLOv3 and HRNet weights for 2D pose detection
+
+1. [YOLOv3 weights](https://drive.google.com/file/d/1YgA9riqm0xG2j72qhONi5oyiAxc98Y1N/view)
+2. [HRNet pose model](https://drive.google.com/file/d/1YLShFgDJt2Cs9goDw9BmR-UzFVgX3lc8/view)
+
+Place both files in the directory:
+
+```
+./demo/lib/checkpoint/
+```
+
+#### 🔻 PoseFormerV2 pretrained model
+
+3. [PoseFormerV2 pretrained weights (243 frames)](https://drive.google.com/file/d/14SpqPyq9yiblCzTH5CorymKCUsXapmkg/view)
+
+Place this file in the directory:
+
+```
+./checkpoint/
+```
+
+### 3. Run the Container
+
+Replace `sample_video.mp4` with your video file (must be located in `./demo/video/`):
+
+```bash
+docker run --rm -it --gpus all poseformerv2
+```
