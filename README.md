@@ -145,7 +145,7 @@ Our codes are mainly based on [PoseFormer](https://github.com/zczcwh/PoseFormer)
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/QitaoZhao/PoseFormerV2.git
+git clone https://github.com/HopeEradicated/PoseFormerV2.git
 cd PoseFormerV2
 ```
 
