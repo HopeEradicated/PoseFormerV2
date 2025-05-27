@@ -21,6 +21,14 @@ from thop import clever_format
 from thop.profile import profile
 import scipy.io as scio
 
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+
+
 opt = opts().parse()
 os.environ["CUDA_VISIBLE_DEVICES"] = opt.gpu
 
@@ -301,7 +309,7 @@ if __name__ == '__main__':
         #test_data = Fusion(opt=opt, train=False,root_path =root_path)
         test_data = Fusion(opt=opt, train=False, root_path=root_path, MAE=opt.MAE)
         test_dataloader = torch.utils.data.DataLoader(test_data, batch_size=opt.batchSize,
-                                                      shuffle=False, num_workers=int(opt.workers), pin_memory=True)
+                                                      shuffle=True, num_workers=int(opt.workers), pin_memory=True)
 
     opt.out_joints = 17
 
@@ -377,10 +385,6 @@ if __name__ == '__main__':
             for param_group in optimizer_all.param_groups:
                 param_group['lr'] *= opt.lr_decay
                 lr *= opt.lr_decay
-
-
-
-
 
 
 

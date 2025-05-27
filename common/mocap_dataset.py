@@ -5,8 +5,14 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import random
 import numpy as np
 from common.skeleton import Skeleton
+
+seed = 42
+np.random.seed(seed)
+random.seed(seed)
+
 
 class MocapDataset:
     def __init__(self, fps, skeleton):

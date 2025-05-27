@@ -1,8 +1,17 @@
+import random
 import torch
 import torch.nn as nn
 from model.block.vanilla_transformer_encoder_pretrain import Transformer, Transformer_dec
 from model.block.strided_transformer_encoder import Transformer as Transformer_reduce
 import numpy as np
+
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+
 
 class LayerNorm(nn.Module):
     def __init__(self, features, eps=1e-6):
@@ -157,7 +166,5 @@ class Model_MAE(nn.Module):
         x_out = x_out.permute(0, 2, 3, 1).contiguous().unsqueeze(dim=-1)
         
         return x_out
-
-
 
 

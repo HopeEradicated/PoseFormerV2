@@ -5,9 +5,18 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import random
 import torch
 import numpy as np
 import hashlib
+
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+
 
 def wrap(func, *args, unsqueeze=False):
     """

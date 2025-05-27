@@ -8,6 +8,9 @@
 from itertools import zip_longest
 import numpy as np
 
+seed = 42
+np.random.seed(seed)
+
 
 # def getbone(seq, boneindex):
 #     bs = np.shape(seq)[0]

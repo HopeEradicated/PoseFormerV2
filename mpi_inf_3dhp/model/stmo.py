@@ -1,7 +1,15 @@
+import random
 import torch
 import torch.nn as nn
 from model.block.vanilla_transformer_encoder import Transformer
 from model.block.strided_transformer_encoder import Transformer as Transformer_reduce
+
+seed = 42
+torch.manual_seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+
 
 class Linear(nn.Module):
     def __init__(self, linear_size, p_dropout=0.25):
@@ -120,7 +128,5 @@ class Model(nn.Module):
         x = x.permute(0, 2, 3, 1).contiguous().unsqueeze(dim=-1)
         
         return x, x_VTE
-
-
 
 

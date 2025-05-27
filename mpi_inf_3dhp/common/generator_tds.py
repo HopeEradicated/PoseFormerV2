@@ -4,7 +4,7 @@ import numpy as np
 class ChunkedGenerator:
     def __init__(self, batch_size, cameras, poses_3d, poses_2d,
                  chunk_length=1, pad=0, causal_shift=0,
-                 shuffle=False, random_seed=1234,
+                 shuffle=True, random_seed=1234,
                  augment=False, reverse_aug= False,kps_left=None, kps_right=None, joints_left=None, joints_right=None,
                  endless=False, out_all = False, MAE=False, tds=1):
         assert poses_3d is None or len(poses_3d) == len(poses_2d), (len(poses_3d), len(poses_2d))
@@ -172,8 +172,6 @@ class ChunkedGenerator:
             return self.batch_cam, None, self.batch_2d.copy(),action, subject, int(cam_index)
         else:
             return self.batch_cam, self.batch_3d.copy(), self.batch_2d.copy(),action, subject, int(cam_index)
-
-
 
 
 

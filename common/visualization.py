@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import random
 import matplotlib
 
 matplotlib.use('Agg')
@@ -16,6 +17,10 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import subprocess as sp
 import cv2
+
+seed = 42
+np.random.seed(seed)
+random.seed(seed)
 
 
 def get_resolution(filename):

@@ -222,15 +222,7 @@ It will print out the similarity percentage for each folder.
 
 ## 🐳 Running in Docker
 
-### 1. Build the Docker Image
-
-Make sure you're in the root directory of the project (where the `Dockerfile` is located), then build the image:
-
-```bash
-docker build -t poseformerv2 .
-```
-
-### 2. Download Required Model Files
+### 1. Download Required Model Files
 
 You need to manually download three files from Google Drive and place them in the appropriate folders:
 
@@ -253,6 +245,14 @@ Place this file in the directory:
 
 ```
 ./checkpoint/
+```
+
+### 2. Build the Docker Image
+
+Make sure you're in the root directory of the project (where the `Dockerfile` is located), then build the image:
+
+```bash
+docker build -t poseformerv2 .
 ```
 
 ### 3. Run the Container

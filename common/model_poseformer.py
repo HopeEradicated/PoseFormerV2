@@ -5,6 +5,7 @@
 import math
 import logging
 from functools import partial
+import random
 from einops import rearrange
 
 import torch
@@ -14,6 +15,13 @@ import torch.nn.functional as F
 
 import numpy as np
 from timm.models.layers import DropPath
+
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 
 class Mlp(nn.Module):

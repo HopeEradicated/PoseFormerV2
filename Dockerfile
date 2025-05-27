@@ -6,6 +6,8 @@ ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 ENV CUDA_LAUNCH_BLOCKING=1
 
+ENV PYTHONHASHSEED=42
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     git \

@@ -5,7 +5,14 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import random
 import torch
+
+seed = 42
+torch.manual_seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 def qrot(q, v):
     """

@@ -1,6 +1,14 @@
+import random
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+
+seed = 42
+torch.manual_seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+
 
 fc_out = 256
 fc_unit = 1024

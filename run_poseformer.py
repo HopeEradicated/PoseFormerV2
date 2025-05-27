@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 # Modified by Qitao Zhao (qitaozhao@mail.sdu.edu.cn)
 
+import random
 import numpy as np
 
 from common.arguments import parse_args
@@ -36,6 +37,13 @@ from common.utils import *
 args = parse_args()
 log =  logging.getLogger()
 
+
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = ''.join(args.gpu)

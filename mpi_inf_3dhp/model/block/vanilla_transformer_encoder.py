@@ -1,3 +1,4 @@
+import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -6,6 +7,14 @@ import numpy as np
 import math
 import os
 import copy
+
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+
 
 def clones(module, N):
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
@@ -126,8 +135,6 @@ class Transformer(nn.Module):
         ff = PositionwiseFeedForward(d_model, d_ff, dropout)
         model = Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N)
         return model
-
-
 
 
 

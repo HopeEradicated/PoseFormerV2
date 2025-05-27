@@ -5,11 +5,19 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import random
 import numpy as np
 import torch
 
 from common.utils import wrap
 from common.quaternion import qrot, qinverse
+
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 def normalize_screen_coordinates(X, w, h): 
     assert X.shape[-1] == 2

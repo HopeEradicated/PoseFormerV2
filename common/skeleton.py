@@ -5,7 +5,12 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import random
 import numpy as np
+
+seed = 42
+np.random.seed(seed)
+random.seed(seed)
 
 class Skeleton:
     def __init__(self, parents, joints_left, joints_right):
